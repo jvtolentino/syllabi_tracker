@@ -25,11 +25,17 @@ app.get('/syllabi', (req, res) => {
 app.post('/syllabi/new', (req, res) => {
 	var newCourse = {
 		code: req.body.course_code,
-		description: req.body.course_description,
-		units: req.body.course_units
-	}
-
-	console.log(newCourse);
+				description: req.body.course_description,
+				units: req.body.course_units
+			}
+		
+			db.syllabi.insert(newCourse, (err, result) => {
+				if(err){
+					console.log(err);
+				} else {
+					res.redirect('/syllabi');
+				}
+			});
 });
 
 // Set server to listen to port 3000
