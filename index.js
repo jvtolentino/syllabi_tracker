@@ -18,7 +18,7 @@ app.set('views', path.join(__dirname, 'views'));
 //Set static path
 //app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/syllabi', (req, res) => {
+app.get('/', (req, res) => {
 	res.render('syllabi');
 });
 
