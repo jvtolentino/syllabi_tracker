@@ -18,11 +18,16 @@ app.set('views', path.join(__dirname, 'views'));
 //Set static path
 //app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-	res.render('syllabi');
+app.get('/syllabi_tracker', (req, res) => {
+	res.render('syllabi_tracker');
 });
 
-app.post('/syllabi/new', (req, res) => {
+
+app.get('/syllabi_tracker/mgmt', (req, res) => {
+	res.render('syllabi_mgmt');
+});
+
+app.post('/syllabi_tracker/managementasdf', (req, res) => {
 	var newCourse = {
 		code: req.body.course_code,
 				description: req.body.course_description,
