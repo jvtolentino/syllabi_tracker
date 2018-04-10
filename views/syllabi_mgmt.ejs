@@ -9,10 +9,19 @@
 
 	<div class='jumbotron'>
 		<mark>List of Syllabi</mark>
+
+		<ul>
+			<% syllabi.forEach((syllabus) => { %>
+				<li><%= syllabus.code %> - <%= syllabus.description %> (<%= syllabus.units %> units)</li>
+			<% }) %>
+		</ul>
 	</div>
 
 	<div class='page-footer'>
-		<a href='/syllabi_tracker/mgmt/new_course' class='btn btn-primary btn-xs' role='button'>Create New Course</a>
+		<small>Create a 
+
+		<a href='/syllabi_tracker/mgmt/new_course' class='btn btn-primary btn-xs' role='button'>New Course</a>
+		</small>
 	</div>
 
 </div>

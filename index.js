@@ -24,23 +24,33 @@ app.get('/syllabi_tracker', (req, res) => {
 
 
 app.get('/syllabi_tracker/mgmt', (req, res) => {
-	res.render('syllabi_mgmt');
+	db.syllabi.find( (err, docs) => {
+		res.render('syllabi_mgmt', {
+			syllabi: docs
+		});
+	});
+	
 });
 
-app.post('/syllabi_tracker/managementasdf', (req, res) => {
+
+app.get('/syllabi_tracker/mgmt/new_course', (req, res) => {
+	res.render('new_course');
+});
+
+app.post('/syllabi_tracker/mgmt/new_course/create', (req, res) => {
 	var newCourse = {
 		code: req.body.course_code,
-				description: req.body.course_description,
-				units: req.body.course_units
-			}
-		
-			db.syllabi.insert(newCourse, (err, result) => {
-				if(err){
-					console.log(err);
-				} else {
-					res.redirect('/syllabi');
-				}
-			});
+		description: req.body.course_description,
+		units: req.body.course_units
+	}
+
+	db.syllabi.insert(newCourse, (err, result) => {
+		if(err){
+			console.log(err);
+		} else {
+			res.redirect('/syllabi_tracker/mgmt');
+		}
+	});
 });
 
 // Set server to listen to port 3000
