@@ -3,7 +3,6 @@
 <form method='POST' action='/syllabi_tracker/mgmt/new_course/create'>
 
 <div class="container">
-
 	<div class='page-header'>
 		<h3>Create New Course</h3>
 	</div>
@@ -17,10 +16,14 @@
 
 		<label for='course_units'>Units</label>
 		<input type='number' class='form-control' min='1' max='5' name='course_units'>
+
+		<br>
+		<button type='submit' class='btn btn-default'>Submit</button>
 	</div>
 
-	<button type='submit' class='btn btn-default'>Submit</button>
-
+	<div class='page-footer'>
+		<small>Return to <a href='/syllabi_tracker/mgmt' class='btn btn-primary btn-xs' role='button'>Previous Page</a></small>
+	</div>
 </div>
 
 </form>
