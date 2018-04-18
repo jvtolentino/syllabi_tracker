@@ -25,7 +25,15 @@ app.get('/syllabi_tracker', (req, res) => {
 
 
 app.get('/syllabi_tracker/mgmt', (req, res) => {
+	/*
 	db.syllabi.find( (err, docs) => {
+		res.render('syllabi_mgmt', {
+			syllabi: docs
+		});
+	});
+	*/
+
+	db.syllabi.find().sort({code: 1}).toArray((err, docs) => {
 		res.render('syllabi_mgmt', {
 			syllabi: docs
 		});
@@ -37,6 +45,12 @@ app.get('/syllabi_tracker/mgmt', (req, res) => {
 app.get('/syllabi_tracker/mgmt/new_course', (req, res) => {
 	res.render('new_course');
 });
+
+
+app.get('/syllabi_tracker/mgmt/course/edit_syllabus', (req, res) => {
+	res.render('edit_syllabus');
+});
+
 
 app.post('/syllabi_tracker/mgmt/course/create', (req, res) => {
 	var newCourse = {

@@ -3,8 +3,6 @@ $(document).ready(function() {
 });
 
 function courseDelete() {
-	//alert($(this).data('id'));
-
 	var confirmation = confirm('Are you sure to want to delete?');
 
 	if(confirmation){

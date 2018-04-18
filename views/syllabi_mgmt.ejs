@@ -34,7 +34,11 @@
 				<td><%= syllabus.code %></td>
 				<td><%= syllabus.description %></td>
 				<td><%= syllabus.units %> units</td>
-				<td><button type='submit' name='submit button' class='courseDelete btn btn-danger btn-sm' data-id="<%= syllabus._id %>">Delete</button></td>
+				<td>
+					<button type='submit' name='submit_button' class='courseDelete btn btn-danger btn-sm' data-id='<%= syllabus._id %>'>Delete</button>
+
+					<a href='/syllabi_tracker/mgmt/course/edit_syllabus' class='btn btn-primary btn-sm'>Edit Syllabus</a>
+				</td>
 			</tr>
 		<% }) %>
 	</table>
