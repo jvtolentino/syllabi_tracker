@@ -1,24 +1,21 @@
 <% include partials/header %>
 
+<script src='../js/course_crud.js'></script>
+
 <div class='container'>
 
 	<div class='page-header'>
 		<h3>Syllabi Management</h3>
 	</div>
 
-
 	<ol class="breadcrumb">
 		<li><a href="/syllabi_tracker">Home</a></li>
 		<li class="active">Syllabi Management</li>
 	</ol>
 
-	<p class="label label-info">
-		Create a <a href='/syllabi_tracker/mgmt/new_course'>New Course</a>
-	</p>
-
+	<a class='btn btn-primary btn-lg' href='/syllabi_tracker/mgmt/new_course'>Create a New Course</a>
 	
-
-	
+	<br><br>
 
 	<table class="table table-striped table-bordered table-hover">
 		<tr>
@@ -27,9 +24,9 @@
 
 		<tr>
 			<th>Code</th>
-			<th colspan="2">Description</th>
+			<th>Description</th>
 			<th>Units</th>
-
+			<th>Actions</th>
 		</tr>
 
 		<% syllabi.forEach((syllabus) => { %>		
@@ -37,7 +34,7 @@
 				<td><%= syllabus.code %></td>
 				<td><%= syllabus.description %></td>
 				<td><%= syllabus.units %> units</td>
-				<td>actions</td>
+				<td><button type='submit' name='submit button' class='courseDelete btn btn-danger btn-sm' data-id="<%= syllabus._id %>">Delete</button></td>
 			</tr>
 		<% }) %>
 	</table>

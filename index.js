@@ -6,6 +6,7 @@ const mongojs = require('mongojs');
 const app = express();
 
 const db = mongojs('lms', ['syllabi']);
+const ObjectId = mongojs.ObjectId;
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -16,7 +17,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 //Set static path
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/syllabi_tracker', (req, res) => {
 	res.render('syllabi_tracker');
@@ -37,7 +38,7 @@ app.get('/syllabi_tracker/mgmt/new_course', (req, res) => {
 	res.render('new_course');
 });
 
-app.post('/syllabi_tracker/mgmt/new_course/create', (req, res) => {
+app.post('/syllabi_tracker/mgmt/course/create', (req, res) => {
 	var newCourse = {
 		code: req.body.course_code,
 		description: req.body.course_description,
@@ -53,7 +54,16 @@ app.post('/syllabi_tracker/mgmt/new_course/create', (req, res) => {
 	});
 });
 
+app.delete('/syllabi_tracker/mgmt/course/delete/:id', (req, res) => {
+	db.syllabi.remove({_id: ObjectId(req.params.id)}, (err, result) => {
+		if(err){
+			console.log(err);
+		}
+		res.redirect('/syllabi_tracker/mgmt');
+	});
+});
+
 // Set server to listen to port 3000
 app.listen(3000, () => {
 	console.log('Server started on Port 3000...');
-})
+});
