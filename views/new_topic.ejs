@@ -1,0 +1,48 @@
+<% include partials/header %>
+
+<form method='POST' action='/syllabi_tracker/mgmt/course/topic/create'>
+
+	<input type='hidden' name='course_id' value='<%= course_id %>'>
+
+	<div class="container">
+		<div class='page-header'>
+			<h3>Create New Topic</h3>
+		</div>
+
+		<ol class="breadcrumb">
+			<li><a href="/syllabi_tracker">Home</a></li>
+			<li><a href='/syllabi_tracker/mgmt'>Syllabi Management</a></li>
+			<li><a href='/syllabi_tracker/mgmt/course/syllabus/<%= course_id %>'>Course Syllabus</a></li>
+			<li class="active">New Topic</li>
+		</ol>
+
+		<div class='form-group'>
+			<label for='order_number'>Order Number</label>
+			<input type='number' class='form-control' name='order_number' min='1'>
+
+			<label for='topic'>Topic</label>
+			<input type='text' class='form-control' name='topic'>
+
+			<label for='no_of_hours'>Number of Hours</label>
+			<input type='number' class='form-control' min='1' name='no_of_hours'>
+
+			<label for='learning_outcomes'>Learning Outcomes</label>
+			<textarea class='form-control' rows='5' name='learning_outcomes'></textarea>
+
+			<label for='learning_activities'>Learning Activities</label>
+			<textarea class='form-control' rows='5' name='learning_activities'></textarea>
+
+			<label for='resources'>Resources</label>
+			<textarea class='form-control' rows='5' name='resources'></textarea>
+
+			<label for='assessment'>Assessment</label>
+			<textarea class='form-control' rows='5' name='assessment'></textarea>
+
+			<br>
+			<button type='submit' class='btn btn-primary btn-lg'>Submit</button>
+		</div>
+	</div>
+
+</form>
+
+<% include partials/footer %>
