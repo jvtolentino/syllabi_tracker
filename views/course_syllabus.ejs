@@ -1,5 +1,7 @@
 <% include partials/header %>
 
+<script src='/js/course_crud.js'></script>
+
 <div class='container'>
 
 	<div class='page-header'>
@@ -41,6 +43,9 @@
 			<td><%= topic.learning_activities %></td>
 			<td><%= topic.resources %></td>
 			<td><%= topic.assessment %></td>
+			<td>
+				<button type='submit' name='submit_button' class='topicDelete btn btn-danger btn-sm' data-topic_id='<%= topic._id %>' data-course_id='<%= course._id %>'>Delete</button>
+			</td>
 		</tr>
 
 		<% }) %>

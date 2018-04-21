@@ -39,11 +39,11 @@ app.get('/syllabi_tracker/mgmt/new_course', (req, res) => {
 
 
 app.get('/syllabi_tracker/mgmt/course/syllabus/:id', (req, res) => {
-	db.syllabi.findOne({_id: ObjectId(req.params.id)}, (err, docs1) => {
-		db.topics.find({course_id: ObjectId(req.params.id)}, (err, docs2) => {
+	db.syllabi.findOne({_id: ObjectId(req.params.id)}, (err, docs_course) => {
+		db.topics.find({course_id: ObjectId(req.params.id)}, (err, docs_topics) => {
 			res.render('course_syllabus', {
-				course: docs1,
-				topics: docs2
+				course: docs_course,
+				topics: docs_topics
 			});
 		});
 	});
@@ -101,9 +101,20 @@ app.delete('/syllabi_tracker/mgmt/course/delete/:id', (req, res) => {
 		if(err){
 			console.log(err);
 		}
-		res.redirect('/syllabi_tracker/mgmt');
+		//res.redirect('/syllabi_tracker/mgmt');
 	});
 });
+
+
+app.delete('/syllabi_tracker/mgmt/course/syllabus/topic/delete/:id', (req, res) => {
+	db.topics.remove({_id: ObjectId(req.params.id)}, (err, result) => {
+		if(err){
+			console.log(err);
+		}
+		//res.redirect('/syllabi_tracker/mgmt/course/syllabus');
+	});
+});
+
 
 // Set server to listen to port 3000
 app.listen(3000, () => {
