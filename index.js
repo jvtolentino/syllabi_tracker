@@ -2,10 +2,65 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongojs = require('mongojs');
+const MongoClient = require('mongodb').MongoClient;
+const assert = require("assert");
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Connection for MongoDB Driver
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Connection URL (local)
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'lms';
+
+
+// Generic function used to insert a document to DB
+const InsertDocument = function(col, doc) {
+	// Connect to server
+	MongoClient.connect(url, (err, client) => {
+		if(err) {
+			console.log(err);
+		} else {
+			const dbo = client.db(dbName);
+			const collection = dbo.collection(col);
+
+			collection.insertOne(doc, (err, result) => {
+				if(err) throw err;
+			});	
+		}
+		client.close();
+	});
+}
+
+
+// Generic function to find ALL documents
+const findDocuments = function(db, col, callback) {
+	// Get the documents collection
+	const collection = db.collection(col);
+	// Find some documents
+	collection.find({}).toArray(function(err, docs) {
+		assert.equal(err, null);
+    	callback(docs);
+	});
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 const app = express();
 
+// Cloud connection string
+/*
+var uri = "mongodb://s2njef:1AW9omDfu2EwLxfY@cluster0-shard-00-00-t09kt.mongodb.net:27017,cluster0-shard-00-01-t09kt.mongodb.net:27017,cluster0-shard-00-02-t09kt.mongodb.net:27017/lms?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin";
+const db = mongojs(uri, ['syllabi', 'topics']);
+*/
+
+// Local connection string
 const db = mongojs('lms', ['syllabi', 'topics']);
+
 const ObjectId = mongojs.ObjectId;
 
 // Body Parser Middleware
@@ -55,6 +110,47 @@ app.get('/syllabi_tracker/mgmt/course/new_topic/:id', (req, res) => {
 		course_id: req.params.id
 	});
 });
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Routes to Classess Management
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+app.get('/classes/mgmt', (req, res) => {
+	// Use connect method to connect to the server
+	MongoClient.connect(url, function(err, client) {
+  		assert.equal(null, err);
+  		const dbo = client.db(dbName);
+ 
+    	findDocuments(db, "classes", function(docs) {
+    		res.render("classes/classes_mgmt", {
+    			classes : docs
+    		});
+			client.close();
+    	});
+	});
+});
+
+
+app.get("/classes/mgmt/new", (req, res) => {
+	res.render('classes/new_class');
+});
+
+
+app.post('/classes/mgmt/create', (req, res) => {
+	var newClass = {
+		section : req.body.class_section,
+		room : req.body.class_room,
+		schedule : req.body.class_schedule
+	}
+
+	InsertDocument('classes', newClass);
+	res.redirect('/classes/mgmt');
+
+});
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 app.post('/syllabi_tracker/mgmt/course/create', (req, res) => {

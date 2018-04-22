@@ -1,6 +1,6 @@
 {
   "name": "syllabi_tracker",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Tracks topics in your syllabi",
   "main": "index.js",
   "scripts": {

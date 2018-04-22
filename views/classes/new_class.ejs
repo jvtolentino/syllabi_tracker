@@ -1,0 +1,37 @@
+<% include ../partials/header %>
+
+<form method='POST' action='/classes/mgmt/create'>
+
+	<div class='container'>
+
+		<div class='page-header'>
+			<h3>Create a New Class</h3>
+		</div>
+
+		<ol class="breadcrumb">
+			<li><a href="/syllabi_tracker">Home</a></li>
+			<li><a href='/classes/mgmt'>Classes Management</a></li>
+			<li class="active">New Class</li>
+		</ol>
+
+		<div class='form-group'>
+			<label for='class_section'>Section</label>
+			<input type='text' class='form-control' name='class_section'>
+
+			<label for='class_room'>Room</label>
+			<input type='text' class='form-control' name='class_room'>
+
+			<label for='class_schedule'>Schedule</label>
+			<input type='text' class='form-control' name='class_schedule'>
+		</div>
+
+		<br>
+		<button type='submit' class='btn btn-primary btn-lg'>Submit</button>
+	</div>
+
+	
+
+
+</form>
+
+<% include ../partials/footer %>
