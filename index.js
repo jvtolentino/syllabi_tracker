@@ -4,6 +4,8 @@ const path = require('path');
 const mongojs = require('mongojs');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require("assert");
+const ObjectId = require('mongodb').ObjectId;
+
 
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -50,6 +52,7 @@ const findDocuments = function(db, col, callback) {
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+
 const app = express();
 
 // Cloud connection string
@@ -61,7 +64,8 @@ const db = mongojs(uri, ['syllabi', 'topics']);
 // Local connection string
 const db = mongojs('lms', ['syllabi', 'topics']);
 
-const ObjectId = mongojs.ObjectId;
+// old objectid
+//const ObjectId = mongojs.ObjectId;
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -71,38 +75,96 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-//Set static path
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Routes to Static Path and Homepage
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// Homepage
 app.get('/syllabi_tracker', (req, res) => {
 	res.render('syllabi_tracker');
 });
 
-
-app.get('/syllabi_tracker/mgmt', (req, res) => {
-	db.syllabi.find().sort({code: 1}).toArray((err, docs) => {
-		res.render('syllabi_mgmt', {
-			syllabi: docs
-		});
-	});	
-});
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-app.get('/syllabi_tracker/mgmt/new_course', (req, res) => {
-	res.render('new_course');
-});
 
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Routes to Courses Management
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-app.get('/syllabi_tracker/mgmt/course/syllabus/:id', (req, res) => {
-	db.syllabi.findOne({_id: ObjectId(req.params.id)}, (err, docs_course) => {
-		db.topics.find({course_id: ObjectId(req.params.id)}, (err, docs_topics) => {
-			res.render('course_syllabus', {
-				course: docs_course,
-				topics: docs_topics
-			});
-		});
+app.get("/courses/mgmt", (req, res) => {
+	// Use connect method to connect to the server
+	MongoClient.connect(url, function(err, client) {
+  		assert.equal(null, err);
+  		const dbo = client.db(dbName);
+ 
+    	findDocuments(dbo, "courses", function(docs) {
+    		res.render("courses/courses_mgmt", {
+    			courses : docs
+    		});
+			client.close();
+    	});
 	});
 });
+
+
+app.get('/courses/mgmt/new', (req, res) => {
+	res.render('courses/new_course');
+});
+
+
+app.post('/courses/mgmt/create', (req, res) => {
+	var newCourse = {
+		code: req.body.code,
+		description: req.body.description,
+		units: req.body.units
+	}
+
+	InsertDocument('courses', newCourse);
+	res.redirect('/courses/mgmt');
+});
+
+
+app.delete('/courses/mgmt/delete/:id', (req, res) => {
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		const collection = dbo.collection('courses');
+		collection.deleteOne({_id : ObjectId(req.params.id)}, (err, result) => {
+			if(err) throw err;
+		});
+		client.close();
+	});
+	res.redirect("/courses/mgmt");
+});
+
+
+app.get('/courses/mgmt/syllabus/:id', (req, res) => {
+
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		const collection = dbo.collection("courses");
+		collection.findOne({ _id : ObjectId(req.params.id)}, function(err, docs1) {
+			collection.find({}, function(err, docs2) {
+				console.log(docs2);
+				res.render("courses/course_syllabus", {
+					course : docs1,
+					
+				});
+				
+			});
+		});
+		
+	});
+});
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 app.get('/syllabi_tracker/mgmt/course/new_topic/:id', (req, res) => {
@@ -153,21 +215,7 @@ app.post('/classes/mgmt/create', (req, res) => {
 
 
 
-app.post('/syllabi_tracker/mgmt/course/create', (req, res) => {
-	var newCourse = {
-		code: req.body.course_code,
-		description: req.body.course_description,
-		units: req.body.course_units
-	}
 
-	db.syllabi.insert(newCourse, (err, result) => {
-		if(err){
-			console.log(err);
-		} else {
-			res.redirect('/syllabi_tracker/mgmt');
-		}
-	});
-});
 
 
 app.post('/syllabi_tracker/mgmt/course/topic/create', (req, res) => {
@@ -189,16 +237,6 @@ app.post('/syllabi_tracker/mgmt/course/topic/create', (req, res) => {
 			res.redirect('/syllabi_tracker/mgmt/course/syllabus/'+req.body.course_id);
 		}
 	})
-});
-
-
-app.delete('/syllabi_tracker/mgmt/course/delete/:id', (req, res) => {
-	db.syllabi.remove({_id: ObjectId(req.params.id)}, (err, result) => {
-		if(err){
-			console.log(err);
-		}
-		//res.redirect('/syllabi_tracker/mgmt');
-	});
 });
 
 

@@ -14,11 +14,10 @@ function courseDelete() {
 	if(confirmation){
 		$.ajax({
 			type:'DELETE',
-			url: '/syllabi_tracker/mgmt/course/delete/'+$(this).data('id')
+			url: '/courses/mgmt/delete/'+$(this).data('id')
 		}).done((response) => {
-			window.location.replace('/syllabi_tracker/mgmt');
+			window.location.replace('/courses/mgmt');
 		});
-		//window.location.replace('/syllabi_tracker/mgmt');
 		location.reload();
 	} else {
 		console.log("error");
