@@ -1,8 +1,8 @@
-<% include partials/header %>
+<% include ../../partials/header %>
 
-<form method='POST' action='/syllabi_tracker/mgmt/course/topic/create'>
+<form method='POST' action='../../../../courses/mgmt/topics/create'>
 
-	<input type='hidden' name='course_id' value='<%= course_id %>'>
+	<input type='hidden' name='course_id' value='<%= course_id %>'
 
 	<div class="container">
 		<div class='page-header'>
@@ -11,8 +11,8 @@
 
 		<ol class="breadcrumb">
 			<li><a href="/syllabi_tracker">Home</a></li>
-			<li><a href='/syllabi_tracker/mgmt'>Syllabi Management</a></li>
-			<li><a href='/syllabi_tracker/mgmt/course/syllabus/<%= course_id %>'>Course Syllabus</a></li>
+			<li><a href='/courses/mgmt'>Courses Management</a></li>
+			<li><a href='/courses/mgmt/syllabus/<%= course_id %>'>Course Syllabus</a></li>
 			<li class="active">New Topic</li>
 		</ol>
 
@@ -45,4 +45,4 @@
 
 </form>
 
-<% include partials/footer %>
+<% include ../../partials/footer %>
