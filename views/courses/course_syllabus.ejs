@@ -4,15 +4,17 @@
 
 <div class='container'>
 
-	<div class='page-header'>
-		<h3>Course Syllabus</h3>
-	</div>
+	<br>
 
 	<ol class="breadcrumb">
 		<li><a href="/syllabi_tracker">Home</a></li>
 		<li><a href='/courses/mgmt'>Courses Management</a></li>
 		<li class="active">Course Syllabus</li>
 	</ol>
+
+	<div class='page-header'>
+		<h3>Course Syllabus</h3>
+	</div>
 
 	<a class='btn btn-primary btn-lg' href='/courses/mgmt/topics/new/<%= course._id %>'>Create a New Topic</a>
 
@@ -26,7 +28,7 @@
 		<tr>
 			<th>#</th>
 			<th>Learning Outcomes</th>
-			<th>Topics</th>
+			<th>Topic</th>
 			<th>Number of Hours</th>
 			<th>Learning Activities</th>
 			<th>Resources</th>
@@ -36,13 +38,16 @@
 
 		<% topics.forEach((topic) => { %>		
 			<tr>
-				<td><%= topic.order_number %></td>
+				<td><%= topic.topic_number %></td>
 				<td><%= topic.learning_outcomes %></td>
-				<td><%= topic.topic %> units</td>
+				<td><%= topic.topic %></td>
+				<td><%= topic.no_of_hours %></td>
+				<td><%= topic.learning_activities %></td>
+				<td><%= topic.resources %></td>
+				<td><%= topic.assessment %></td>
 				<td>
-					<button type='submit' name='submit_button' class='courseDelete btn btn-danger btn-sm' data-id='<%= course._id %>'>Delete</button>
-
-					<a href='/courses/mgmt/syllabus/<%= course._id %>' class='btn btn-primary btn-sm'>Syllabus</a>
+					<button type='submit' name='submit_button' class='topicDelete btn btn-danger btn-sm' data-topic_id='<%= topic._id %>'
+						data-course_id='<%= course.course_id %>'>Delete</button>
 				</td>
 			</tr>
 		<% }) %>

@@ -22,37 +22,6 @@ const url = 'mongodb://localhost:27017';
 // Database Name
 const dbName = 'lms';
 
-
-// Generic function used to insert a document to DB
-const InsertDocument = function(col, doc) {
-	// Connect to server
-	MongoClient.connect(url, (err, client) => {
-		if(err) {
-			console.log(err);
-		} else {
-			const dbo = client.db(dbName);
-			const collection = dbo.collection(col);
-
-			collection.insertOne(doc, (err, result) => {
-				if(err) throw err;
-			});	
-		}
-		client.close();
-	});
-}
-
-
-// Generic function to find ALL documents
-const findDocuments = function(db, col, callback) {
-	// Get the documents collection
-	const collection = db.collection(col);
-	// Find some documents
-	collection.find({}).toArray(function(err, docs) {
-		assert.equal(err, null);
-    	callback(docs);
-	});
-}
-
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -140,7 +109,14 @@ app.post('/courses/mgmt/create', (req, res) => {
 		units: req.body.units
 	}
 
-	InsertDocument('courses', newCourse);
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		dbo.collection("courses").insertOne(newCourse, (err, result) => {
+			if(err) throw err;
+			client.close();
+		})
+	});
+
 	res.redirect('/courses/mgmt');
 });
 
@@ -148,28 +124,35 @@ app.post('/courses/mgmt/create', (req, res) => {
 app.delete('/courses/mgmt/delete/:id', (req, res) => {
 	MongoClient.connect(url, (err, client) => {
 		const dbo = client.db(dbName);
-		const collection = dbo.collection('courses');
-		collection.deleteOne({_id : ObjectId(req.params.id)}, (err, result) => {
+		const collection1 = dbo.collection('courses');
+		const collection2 = dbo.collection('topics');
+
+		collection1.deleteOne({ _id : ObjectId(req.params.id) }, (err, result) => {
 			if(err) throw err;
+			collection2.deleteMany({ course_id : ObjectId(req.params.id) }, (err, result) => {
+				if(err) throw err;
+			});
+			client.close();
 		});
-		client.close();
 	});
-	res.redirect("/courses/mgmt");
 });
 
 
 app.get('/courses/mgmt/syllabus/:id', (req, res) => {
-	
 	MongoClient.connect(url, (err, client) => {
 		const dbo = client.db(dbName);
 		const collection1 = dbo.collection("courses");
 		const collection2 = dbo.collection("topics");
+		
 		collection1.findOne({ _id : ObjectId(req.params.id)}, function(err, docs1) {
-			collection2.find({ course_id : ObjectId(req.params.id)}).toArray(function(err, docs2) {
+			collection2.find({ course_id : ObjectId(req.params.id)}).sort({ topic_number : 1 }).toArray(function(err, docs2) {
+		
 				res.render("courses/course_syllabus", {
 					course : docs1,
 					topics : docs2
 				});
+				
+				client.close();
 			});
 		});
 	});
@@ -183,10 +166,10 @@ app.get('/courses/mgmt/topics/new/:id', (req, res) => {
 });
 
 
-app.post('/courses/mgmt/topics/create', (req, res) => {
+app.post('/courses/mgmt/topics/create/:id', (req, res) => {
 	var newTopic = {
-		course_id: ObjectId(req.body.course_id),
-		order_number: req.body.order_number,
+		course_id: ObjectId(req.params.id),
+		topic_number: req.body.topic_number,
 		topic: req.body.topic,
 		no_of_hours: req.body.no_of_hours,
 		learning_outcomes: req.body.learning_outcomes,
@@ -198,6 +181,7 @@ app.post('/courses/mgmt/topics/create', (req, res) => {
 	MongoClient.connect(url, (err, client) => {
 		const dbo = client.db(dbName);
 		const collection = dbo.collection("topics");
+		
 		collection.insertOne(newTopic, (err, result) => {
 			if(err) throw err;
 		});
@@ -205,7 +189,20 @@ app.post('/courses/mgmt/topics/create', (req, res) => {
 		client.close();
 	});
 
-	res.redirect("/courses/mgmt/syllabus/"+req.body.course_id);
+	res.redirect("/courses/mgmt/syllabus/"+newTopic.course_id);
+});
+
+
+app.delete('/courses/mgmt/syllabus/topics/deleteOne/:id', (req, res) => {
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		const collection = dbo.collection("topics");
+
+		collection.deleteOne({_id : ObjectId(req.params.id)}, (err, result) => {
+			if(err) throw err;
+		});
+		client.close();
+	});
 });
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -221,31 +218,61 @@ app.get('/classes/mgmt', (req, res) => {
 	MongoClient.connect(url, function(err, client) {
   		assert.equal(null, err);
   		const dbo = client.db(dbName);
- 
-    	findDocuments(db, "classes", function(docs) {
-    		res.render("classes/classes_mgmt", {
-    			classes : docs
-    		});
-			client.close();
-    	});
+
+  		dbo.collection("classes").find({}).sort({ sy : -1 }).toArray((err, docs) => {
+  			res.render("classes/classes_mgmt", {
+  				classes: docs
+  			})
+
+  			client.close();
+  		});
 	});
 });
 
 
 app.get("/classes/mgmt/new", (req, res) => {
 	res.render('classes/new_class');
+	location.reload();
 });
 
 
 app.post('/classes/mgmt/create', (req, res) => {
 	var newClass = {
-		section : req.body.class_section,
-		room : req.body.class_room,
-		schedule : req.body.class_schedule
+		sy : req.body.sy,
+		sem : req.body.sem,
+		section : req.body.section,
+		room : req.body.room,
+		schedule : req.body.schedule
 	}
 
-	InsertDocument('classes', newClass);
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		const collection = dbo.collection("classes");
+
+		collection.insertOne(newClass, (err, result) => {
+			if(err) throw err;
+		});
+
+		client.close();
+	});
+
 	res.redirect('/classes/mgmt');
+});
+
+
+app.delete("/classes/mgmt/deleteOne/:id", (req, res) => {
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		dbo.collection("classes").deleteOne({ _id : ObjectId(req.params.id) }, (err, result) => {
+			if(err) throw err;
+			client.close();
+		});
+	});
+});
+
+
+app.get("/classes/mgmt/attach_syllabus", (req, res) => {
+	res.render("classes/attach_syllabus");
 });
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -256,21 +283,3 @@ app.post('/classes/mgmt/create', (req, res) => {
 app.listen(3000, () => {
 	console.log('Server started on Port 3000...');
 });
-
-
-
-
-
-
-/*
-app.delete('/syllabi_tracker/mgmt/course/syllabus/topic/delete/:id', (req, res) => {
-	db.topics.remove({_id: ObjectId(req.params.id)}, (err, result) => {
-		if(err){
-			console.log(err);
-		}
-		//res.redirect('/syllabi_tracker/mgmt/course/syllabus');
-	});
-});
-*/
-
-

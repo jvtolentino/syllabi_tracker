@@ -1,17 +1,17 @@
 <% include ../partials/header %>
 
-<script src='/js/course_crud.js'></script>
+<script src='/js/classes_crud.js'></script>
 
 <div class='container'>
-
-	<div class='page-header'>
-		<h3>Classes Management</h3>
-	</div>
 
 	<ol class="breadcrumb">
 		<li><a href="/syllabi_tracker">Home</a></li>
 		<li class="active">Classes Management</li>
 	</ol>
+
+	<div class='page-header'>
+		<h3>Classes Management</h3>
+	</div>
 
 	<a class='btn btn-primary btn-lg' href='/classes/mgmt/new'>Create a New Class</a>
 
@@ -19,10 +19,12 @@
 
 	<table class="table table-striped table-bordered table-hover">
 		<tr>
-			<th colspan="4">List of Classes</th>	
+			<th colspan="6">List of Classes</th>	
 		</tr>
 
 		<tr>
+			<th>School Year</th>
+			<th>Semester</th>
 			<th>Section</th>
 			<th>Room</th>
 			<th>Schedule</th>
@@ -31,11 +33,16 @@
 
 		<% classes.forEach((c) => { %>		
 			<tr>
+				<td><%= c.sy %></td>
+				<td><%= c.sem %></td>
 				<td><%= c.section %></td>
 				<td><%= c.room %></td>
 				<td><%= c.schedule %></td>
 				<td>
-					<button type='submit' name='submit_button' class='courseDelete btn btn-danger btn-sm' data-id='<%= c._id %>'>Delete</button>
+					<button type='submit' name='submit_button' class='classDelete btn btn-danger btn-sm' data-id='<%= c._id %>'>Delete</button>
+
+					<a class='btn btn-primary btn-sm' href="/classes/mgmt/attach_syllabus" onclick="window.open(this.href, 'Snopzer',
+'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Attach Syllabus</a>
 				</td>
 			</tr>
 		<% }) %>

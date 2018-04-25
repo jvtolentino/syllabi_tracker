@@ -3,26 +3,50 @@
 <form method='POST' action='/classes/mgmt/create'>
 
 	<div class='container'>
-
-		<div class='page-header'>
-			<h3>Create a New Class</h3>
-		</div>
-
 		<ol class="breadcrumb">
 			<li><a href="/syllabi_tracker">Home</a></li>
 			<li><a href='/classes/mgmt'>Classes Management</a></li>
 			<li class="active">New Class</li>
 		</ol>
 
+		<div class='page-header'>
+			<h3>Create a New Class</h3>
+		</div>
+
 		<div class='form-group'>
-			<label for='class_section'>Section</label>
-			<input type='text' class='form-control' name='class_section'>
 
-			<label for='class_room'>Room</label>
-			<input type='text' class='form-control' name='class_room'>
+      <div class="input-group">
+        <span class="input-group-addon">School Year</span>
+        <input type="text" class="form-control" name="sy" placeholder="e.g. 2018 - 2019">
+      </div>
 
-			<label for='class_schedule'>Schedule</label>
-			<input type='text' class='form-control' name='class_schedule'>
+  			<br>
+
+  			<div class="input-group">
+    			<span class="input-group-addon">Semester</span>
+    			<input type="text" class="form-control" name="sem" placeholder="e.g. 1st">
+  			</div>
+
+  			<br>
+
+			<div class="input-group">
+    			<span class="input-group-addon">Class Section</span>
+    			<input type="text" class="form-control" name="section">
+  			</div>
+
+  			<br>
+
+  			<div class="input-group">
+    			<span class="input-group-addon">Room</span>
+    			<input type="text" class="form-control" name="room">
+  			</div>
+
+  			<br>
+
+  			<div class="input-group">
+    			<span class="input-group-addon">Schedule</span>
+    			<input type="text" class="form-control" name="schedule" placeholder="e.g. MWF 7:00am - 8:30am">
+  			</div>
 		</div>
 
 		<br>
