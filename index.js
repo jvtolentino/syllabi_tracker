@@ -231,29 +231,42 @@ app.get('/classes/mgmt', (req, res) => {
 
 
 app.get("/classes/mgmt/new", (req, res) => {
-	res.render('classes/new_class');
-	location.reload();
+	MongoClient.connect(url, (err, client) => {
+		const dbo = client.db(dbName);
+		dbo.collection("courses").find({}).sort({ course_code : 1}).toArray((err, docs) => {
+			res.render("classes/new_class", {
+				courses : docs
+			})
+			client.close();
+		});
+	})
 });
 
 
 app.post('/classes/mgmt/create', (req, res) => {
-	var newClass = {
-		sy : req.body.sy,
-		sem : req.body.sem,
-		section : req.body.section,
-		room : req.body.room,
-		schedule : req.body.schedule
-	}
-
+	var c = {};
+	
 	MongoClient.connect(url, (err, client) => {
 		const dbo = client.db(dbName);
-		const collection = dbo.collection("classes");
+		const collection1 = dbo.collection("courses");
+		const collection2 = dbo.collection("classes");
 
-		collection.insertOne(newClass, (err, result) => {
-			if(err) throw err;
-		});
+		collection1.findOne({ _id : ObjectId(req.body.course_id)}, (err, result1) => {
 
-		client.close();
+			var newClass = {
+				sy : req.body.sy,
+				sem : req.body.sem,
+				course : result1,
+				section : req.body.section,
+				room : req.body.room,
+				schedule : req.body.schedule
+			}
+
+			collection2.insertOne(newClass, (err, result2) => {
+				if(err) throw err;
+				client.close();
+			});
+		});	
 	});
 
 	res.redirect('/classes/mgmt');

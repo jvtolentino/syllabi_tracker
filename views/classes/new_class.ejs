@@ -1,58 +1,75 @@
 <% include ../partials/header %>
 
+   <%= courses.description %>
+
 <form method='POST' action='/classes/mgmt/create'>
 
-	<div class='container'>
-		<ol class="breadcrumb">
-			<li><a href="/syllabi_tracker">Home</a></li>
-			<li><a href='/classes/mgmt'>Classes Management</a></li>
-			<li class="active">New Class</li>
-		</ol>
+<div class='container'>
 
-		<div class='page-header'>
-			<h3>Create a New Class</h3>
-		</div>
+	<br>
 
-		<div class='form-group'>
+	<ol class="breadcrumb">
+		<li><a href="/syllabi_tracker">Home</a></li>
+		<li><a href='/classes/mgmt'>Classes Management</a></li>
+		<li class="active">New Class</li>
+	</ol>
 
-      <div class="input-group">
-        <span class="input-group-addon">School Year</span>
-        <input type="text" class="form-control" name="sy" placeholder="e.g. 2018 - 2019">
-      </div>
+	<div class='page-header'>
+		<h3>Create a New Class</h3>
+	</div>
 
-  			<br>
+	<div class='form-group'>
 
-  			<div class="input-group">
-    			<span class="input-group-addon">Semester</span>
-    			<input type="text" class="form-control" name="sem" placeholder="e.g. 1st">
-  			</div>
-
-  			<br>
-
-			<div class="input-group">
-    			<span class="input-group-addon">Class Section</span>
-    			<input type="text" class="form-control" name="section">
-  			</div>
-
-  			<br>
-
-  			<div class="input-group">
-    			<span class="input-group-addon">Room</span>
-    			<input type="text" class="form-control" name="room">
-  			</div>
-
-  			<br>
-
-  			<div class="input-group">
-    			<span class="input-group-addon">Schedule</span>
-    			<input type="text" class="form-control" name="schedule" placeholder="e.g. MWF 7:00am - 8:30am">
-  			</div>
+		<div class="input-group">
+			<span class="input-group-addon">School Year</span>
+			<input type="text" class="form-control" name="sy" placeholder="e.g. 2018 - 2019">
 		</div>
 
 		<br>
+
+		<div class="input-group">
+			<span class="input-group-addon">Semester</span>
+			<input type="text" class="form-control" name="sem" placeholder="e.g. 1st">
+		</div>
+
+		<br>
+
+		<div class='input-group'>    
+			<span class='input-group-addon'>Course</span>
+			<select name='course_id' class='form-control'>
+				<% courses.forEach((c) => { %>
+				<option value='<%= c._id %>'><%= c.code %> - <%= c.description %></option>
+				<% }) %>
+			</select>
+		</div>
+
+		<br>
+
+		<div class="input-group">
+			<span class="input-group-addon">Class Section</span>
+			<input type="text" class="form-control" name="section">
+		</div>
+
+		<br>
+
+		<div class="input-group">
+			<span class="input-group-addon">Room</span>
+			<input type="text" class="form-control" name="room">
+		</div>
+
+		<br>
+
+		<div class="input-group">
+			<span class="input-group-addon">Schedule</span>
+			<input type="text" class="form-control" name="schedule" placeholder="e.g. MWF 7:00am - 8:30am">
+		</div>
+        		
+
+        <br>
 		<button type='submit' class='btn btn-primary btn-lg'>Submit</button>
-	</div>
-	
+
+</div>
+            	
 </form>
 
 <% include ../partials/footer %>

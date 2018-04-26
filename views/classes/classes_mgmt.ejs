@@ -3,6 +3,7 @@
 <script src='/js/classes_crud.js'></script>
 
 <div class='container'>
+	<br>
 
 	<ol class="breadcrumb">
 		<li><a href="/syllabi_tracker">Home</a></li>
@@ -19,12 +20,13 @@
 
 	<table class="table table-striped table-bordered table-hover">
 		<tr>
-			<th colspan="6">List of Classes</th>	
+			<th colspan="7">List of Classes</th>	
 		</tr>
 
 		<tr>
 			<th>School Year</th>
 			<th>Semester</th>
+			<th>Course</th>
 			<th>Section</th>
 			<th>Room</th>
 			<th>Schedule</th>
@@ -35,22 +37,16 @@
 			<tr>
 				<td><%= c.sy %></td>
 				<td><%= c.sem %></td>
+				<td><%= c.course.description %></td>
 				<td><%= c.section %></td>
 				<td><%= c.room %></td>
 				<td><%= c.schedule %></td>
 				<td>
 					<button type='submit' name='submit_button' class='classDelete btn btn-danger btn-sm' data-id='<%= c._id %>'>Delete</button>
-
-					<a class='btn btn-primary btn-sm' href="/classes/mgmt/attach_syllabus" onclick="window.open(this.href, 'Snopzer',
-'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" >Attach Syllabus</a>
 				</td>
 			</tr>
 		<% }) %>
 
 	</table>
-
-
-
-
 
 <% include ../partials/footer %>
