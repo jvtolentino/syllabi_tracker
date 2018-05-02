@@ -244,8 +244,6 @@ app.get("/classes/mgmt/new", (req, res) => {
 
 
 app.post('/classes/mgmt/create', (req, res) => {
-	var c = {};
-	
 	MongoClient.connect(url, (err, client) => {
 		const dbo = client.db(dbName);
 		const collection1 = dbo.collection("courses");
